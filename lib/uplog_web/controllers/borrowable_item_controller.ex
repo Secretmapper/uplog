@@ -10,6 +10,7 @@ of the Philippines, Diliman for the AY 2019-
 Arian Allenson Valdez - 26/01/2020 - Scaffold
 Arian Allenson Valdez - 28/01/2020 - Allow deleting of borrowable item, borrow as org
 Bianca Bueno - 30/01/2020 - Pass can_current_user_approve to organization template
+Arian Allenson Valdez - 30/01/2020 - Fix bug where non admin can edit item from another org
 """
 
 defmodule UplogWeb.BorrowableItemController do
@@ -49,8 +50,9 @@ defmodule UplogWeb.BorrowableItemController do
     organization = Borrowables.get_organization!(organization_id)
     borrowable_item = Borrowables.get_borrowable_item!(id)
     user = Pow.Plug.current_user(conn)
+    is_current_user_org_admin = Borrowables.is_user_organization_admin(user, organization)
     organizations = Borrowables.get_user_organizations(user)
-    render(conn, "show.html", organization: organization, borrowable_item: borrowable_item, organizations: organizations)
+    render(conn, "show.html", organization: organization, borrowable_item: borrowable_item, organizations: organizations, is_current_user_org_admin: is_current_user_org_admin)
   end
 
   def edit(conn, %{"organization_id" => organization_id, "id" => id}) do

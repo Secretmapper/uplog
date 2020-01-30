@@ -21,7 +21,9 @@
 
 </ul>
 
-<span><%= link "Edit", to: Routes.organization_borrowable_item_path(@conn, :edit, @organization, @borrowable_item) %></span>
+<%= if @current_user.super_user or @is_current_user_org_admin do %>
+  <span><%= link "Edit", to: Routes.organization_borrowable_item_path(@conn, :edit, @organization, @borrowable_item) %></span>
+<% end %>
 <h3>Borrow as</h3>
 <ul>
 <%= for organization <- @organizations do %>
