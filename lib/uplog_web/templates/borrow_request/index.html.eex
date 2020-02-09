@@ -36,3 +36,32 @@
 <% end %>
   </tbody>
 </table>
+
+<table>
+  <thead>
+    <tr>
+      <th>Approved Requests</th>
+      <th>By</th>
+      <th>Start At</th>
+      <th>End At</th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for borrow_request <- @approved_requests do %>
+    <tr>
+      <td><%= borrow_request.item.name %></td>
+      <td><%= borrow_request.borrower_organization.name %></td>
+      <td>
+        <%= borrow_request.start_at.year %>
+        <%= borrow_request.start_at.month %>
+        <%= borrow_request.start_at.day %>
+      </td>
+      <td>
+        <%= borrow_request.end_at.year %>
+        <%= borrow_request.end_at.month %>
+        <%= borrow_request.end_at.day %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>

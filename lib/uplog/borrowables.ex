@@ -310,6 +310,16 @@ defmodule Uplog.Borrowables do
     |> Repo.preload([:borrower_organization])
   end
 
+  def list_approved_requests(organization_id) do
+    query = from br in BorrowRequest,
+              left_join: i in BorrowableItem,
+                on: br.item_id == i.id,
+              where: i.organization_id == ^organization_id and not(is_nil(br.approved_at))
+    Repo.all(query)
+    |> Repo.preload([:item])
+    |> Repo.preload([:borrower_organization])
+  end
+
   @doc """
   Gets a single borrow_request.
 
