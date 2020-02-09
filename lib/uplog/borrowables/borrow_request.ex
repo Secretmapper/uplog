@@ -8,6 +8,7 @@ Science, College of Engineering, University
 of the Philippines, Diliman for the AY 2019-
 2020
 Arian Allenson Valdez - 26/01/2020 - Scaffold, add assoc fields
+Arian Allenson Valdez - 09/02/2020 - Add borrow start/end dates
 """
 
 defmodule Uplog.Borrowables.BorrowRequest do
@@ -17,6 +18,9 @@ defmodule Uplog.Borrowables.BorrowRequest do
   schema "borrow_requests" do
     belongs_to :approved_by, Uplog.Users.User
     field :approved_at, :naive_datetime
+
+    field :start_at, :naive_datetime
+    field :end_at, :naive_datetime
 
     belongs_to :denied_by, Uplog.Users.User
     field :denied_at, :naive_datetime
@@ -37,7 +41,7 @@ defmodule Uplog.Borrowables.BorrowRequest do
   @doc false
   def changeset(borrow_request, attrs) do
     borrow_request
-    |> cast(attrs, [:borrower_organization_id])
-    |> validate_required([])
+    |> cast(attrs, [:borrower_organization_id, :start_at, :end_at])
+    |> validate_required([:start_at, :end_at])
   end
 end

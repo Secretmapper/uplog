@@ -26,11 +26,18 @@ defmodule UplogWeb.BorrowRequestController do
     render(conn, "index.html", organization: organization, borrowable_item: borrowable_item, borrow_requests: borrow_requests)
   end
 
-  def create(conn, %{"organization_id" => organization_id, "borrowable_item_id" => item_id, "borrower_organization_id" => borrower_organization_id}) do
+  def create(conn, %{"organization_id" => organization_id, "borrowable_item_id" => item_id, "borrower_organization_id" => borrower_organization_id, "start" => start_date, "end" => end_date}) do
     organization = Borrowables.get_organization!(organization_id)
     borrowable_item = Borrowables.get_borrowable_item!(item_id)
     user = Pow.Plug.current_user(conn)
-    case Borrowables.create_borrow_request(user, borrower_organization_id, borrowable_item) do
+
+    start_at = NaiveDateTime.from_iso8601!(start_date <> " 00:00:00")
+    |> NaiveDateTime.truncate(:second)
+
+    end_at = NaiveDateTime.from_iso8601!(end_date <> " 23:59:00")
+    |> NaiveDateTime.truncate(:second)
+
+    case Borrowables.create_borrow_request(user, borrower_organization_id, borrowable_item, start_at, end_at) do
       {:ok, borrow_request} ->
         conn
         |> put_flash(:info, "Borrow request created successfully.")

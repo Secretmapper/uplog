@@ -13,6 +13,7 @@ Arian Allenson Valdez - 28/01/2020 -
 Add borrow request, is_user_org_admin methods, modify delete borrowable_item, prevent double borrowing
 Borrow as org,
 Arian Allenson Valdez - 29/01/2020 - Add comments
+Arian Allenson Valdez - 09/02/2020 - Add borrow request dates
 """
 
 defmodule Uplog.Borrowables do
@@ -383,7 +384,7 @@ defmodule Uplog.Borrowables do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_borrow_request(user, organization_id, item) do
+  def create_borrow_request(user, organization_id, item, start_date, end_date) do
     # TODO:
     # Check if user has borrow permissions for organization
     # Check if item is borrowable (ie visible)
@@ -400,7 +401,11 @@ defmodule Uplog.Borrowables do
       {:error, %Ecto.Changeset{}}
     else
       %BorrowRequest{}
-      |> BorrowRequest.changeset(%{ borrower_organization_id: organization_id })
+      |> BorrowRequest.changeset(%{
+        borrower_organization_id: organization_id,
+        start_at: start_date,
+        end_at: end_date
+      })
       |> Ecto.Changeset.put_assoc(:item, item)
       |> Ecto.Changeset.put_assoc(:borrower_user, user)
       |> Repo.insert()
