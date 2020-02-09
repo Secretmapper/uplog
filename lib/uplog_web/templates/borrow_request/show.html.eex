@@ -2,6 +2,18 @@
 
 <ul>
   <%= @borrow_request.item.name %>
+  <p>
+    Borrow Start:
+    <%= @borrow_request.start_at.year %>
+    <%= @borrow_request.start_at.month %>
+    <%= @borrow_request.start_at.day %>
+  </p>
+  <p>
+    Borrow End:
+    <%= @borrow_request.end_at.year %>
+    <%= @borrow_request.end_at.month %>
+    <%= @borrow_request.end_at.day %>
+  </p>
   <%= if @borrow_request.denied_at do %>
     <p>Request Denied by <%= @borrow_request.denied_by.email %></p>
   <%= else %>

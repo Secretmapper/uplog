@@ -5,6 +5,8 @@
     <tr>
       <th>Item Being Borrowed</th>
       <th>By</th>
+      <th>Start At</th>
+      <th>End At</th>
 
       <th></th>
     </tr>
@@ -14,9 +16,21 @@
     <tr>
       <td><%= borrow_request.item.name %></td>
       <td><%= borrow_request.borrower_organization.name %></td>
+      <td>
+        <%= borrow_request.start_at.year %>
+        <%= borrow_request.start_at.month %>
+        <%= borrow_request.start_at.day %>
+      </td>
+      <td>
+        <%= borrow_request.end_at.year %>
+        <%= borrow_request.end_at.month %>
+        <%= borrow_request.end_at.day %>
+      </td>
 
       <td>
         <span><%= link "Show", to: Routes.organization_borrowable_item_borrow_request_path(@conn, :show, @organization, @borrowable_item, borrow_request) %></span>
+        <span><%= link "Approve", to: Routes.organization_borrowable_item_borrow_request_approve_path(@conn, :approve, @organization, @borrowable_item, borrow_request), method: :approve %></span>
+        <span><%= link "Deny", to: Routes.organization_borrowable_item_borrow_request_deny_path(@conn, :deny, @organization, @borrowable_item, borrow_request), method: :deny %></span>
       </td>
     </tr>
 <% end %>

@@ -397,7 +397,14 @@ defmodule Uplog.Borrowables do
     |> where([br], is_nil(br.approved_at) and is_nil(br.denied_at))
     |> Repo.exists?()
 
-    if br do
+    # Check if approved
+    bra = BorrowRequest
+    |> where([br], br.item_id == ^item.id)
+    |> where([br], not(is_nil(br.approved_at)))
+    |> where([br], br.start_at <= ^end_date and ^start_date <= br.end_at)
+    |> Repo.exists?()
+
+    if br or bra do
       {:error, %Ecto.Changeset{}}
     else
       %BorrowRequest{}

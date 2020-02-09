@@ -33,5 +33,6 @@ defmodule Uplog.Borrowables.BorrowableItem do
     |> cast(attrs, [:name, :description, :visible, :quantity])
     |> validate_required([:name, :description, :quantity])
     |> validate_number(:quantity, [greater_than: 0])
+    |> unique_constraint(:name, name: :borrowable_items_name_description_organization_id_index)
   end
 end

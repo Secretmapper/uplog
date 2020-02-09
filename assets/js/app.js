@@ -31,7 +31,7 @@ $(function() {
       for (let pair of param.entries()) {
         if (pair[0] === 'end') {
           newParam.set('end', end.format('YYYY-MM-DD'))
-        } else if (pair[1] === 'start') {
+        } else if (pair[0] === 'start') {
           newParam.set('start', start.format('YYYY-MM-DD'))
         } else {
           newParam.set(pair[0], pair[1])
