@@ -359,15 +359,27 @@ defmodule Uplog.Borrowables do
   Approve borrow request
   """
   def approve_borrow_request!(user, id) do
-    # TODO:
-    # Ensure proper permissions
+    br = Repo.get!(BorrowRequest, id)
+
     # Ensure can approve (has not already denied/approved)
-    Repo.get!(BorrowRequest, id)
-    |> Repo.preload([:approved_by])
-    |> Ecto.Changeset.change(%{})
-    |> Ecto.Changeset.put_change(:approved_at, NaiveDateTime.truncate(NaiveDateTime.utc_now, :second))
-    |> Ecto.Changeset.put_assoc(:approved_by, user)
-    |> Repo.update
+    bra = BorrowRequest
+    |> where([bra], bra.item_id == ^br.item_id)
+    |> where([bra], not(is_nil(bra.approved_at)))
+    |> where([bra], bra.start_at <= ^br.end_at and ^br.start_at <= bra.end_at)
+    |> Repo.exists?()
+
+    if bra do
+      {:error, %Ecto.Changeset{}}
+    else
+      # TODO:
+      # Ensure proper permissions
+      br
+      |> Repo.preload([:approved_by])
+      |> Ecto.Changeset.change(%{})
+      |> Ecto.Changeset.put_change(:approved_at, NaiveDateTime.truncate(NaiveDateTime.utc_now, :second))
+      |> Ecto.Changeset.put_assoc(:approved_by, user)
+      |> Repo.update
+    end
   end
 
   @doc """
