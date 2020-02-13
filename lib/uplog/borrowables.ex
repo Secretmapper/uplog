@@ -204,7 +204,8 @@ defmodule Uplog.Borrowables do
     query = from i in BorrowableItem,
       left_join: br in BorrowRequest,
         on: br.item_id == i.id and not(is_nil(br.approved_at)) and br.start_at <= ^DateTime.utc_now and ^DateTime.utc_now <= br.end_at,
-      where: (i.organization_id == ^organization.id),
+      group_by: i.id and ,
+      where: (i.organization_id == ^organization.id) and i.visible,
       select_merge: %{borrowed: not(is_nil(br.id))}
     Repo.all(query)
   end
