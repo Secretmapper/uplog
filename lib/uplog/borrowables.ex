@@ -201,8 +201,11 @@ defmodule Uplog.Borrowables do
   List borrowable items
   """
   def list_borrowable_items(organization) do
-    query = from bi in assoc(organization, :borrowable_items),
-      where: bi.visible == true
+    query = from i in BorrowableItem,
+      left_join: br in BorrowRequest,
+        on: br.item_id == i.id and not(is_nil(br.approved_at)) and br.start_at <= ^DateTime.utc_now and ^DateTime.utc_now <= br.end_at,
+      where: (i.organization_id == ^organization.id),
+      select_merge: %{borrowed: not(is_nil(br.id))}
     Repo.all(query)
   end
 

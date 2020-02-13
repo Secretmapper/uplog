@@ -21,6 +21,7 @@ defmodule Uplog.Borrowables.BorrowableItem do
     field :name, :string
     field :quantity, :integer
     field :visible, :boolean, default: true
+    field :borrowed, :boolean, virtual: true
     has_many :borrow_requests, Uplog.Borrowables.BorrowRequest
     belongs_to :organization, Uplog.Borrowables.Organization
 

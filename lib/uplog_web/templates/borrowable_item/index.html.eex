@@ -6,6 +6,7 @@
       <th>Name</th>
       <th>Description</th>
       <th>Quantity</th>
+      <th>Condition</th>
 
       <th></th>
     </tr>
@@ -16,6 +17,7 @@
       <td><%= borrowable_item.name %></td>
       <td><%= borrowable_item.description %></td>
       <td><%= borrowable_item.quantity || 1 %></td>
+      <td><%= if borrowable_item.borrowed, do: "Borrowed", else: "Not Borrowed" %></td>
 
       <td>
           <span><%= link "Show", to: Routes.organization_borrowable_item_path(@conn, :show, @organization, borrowable_item) %></span>
