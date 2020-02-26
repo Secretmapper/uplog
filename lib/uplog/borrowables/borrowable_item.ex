@@ -10,6 +10,7 @@ of the Philippines, Diliman for the AY 2019-
 Arian Allenson Valdez - 26/01/2020 - Scaffold, Add assoc, remove 
 Arian Allenson Valdez - 28/01/2020 - Remove :visible to required changeset
 Arian Allenson Valdez - 09/02/2020 - Add quantity to item
+Arian Allenson Valdez - 26/02/2020 - Add constraints
 """
 
 defmodule Uplog.Borrowables.BorrowableItem do
@@ -34,6 +35,8 @@ defmodule Uplog.Borrowables.BorrowableItem do
     |> cast(attrs, [:name, :description, :visible, :quantity])
     |> validate_required([:name, :description, :quantity])
     |> validate_number(:quantity, [greater_than: 0])
+    |> validate_length(:name, max: 100)
+    |> validate_length(:description, max: 1000)
     |> unique_constraint(:name, name: :borrowable_items_name_description_organization_id_index)
   end
 end

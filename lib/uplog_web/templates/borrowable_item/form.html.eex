@@ -15,7 +15,7 @@
 
   <%= if Map.has_key?(assigns, :new) do %>
     <%= label f, :quantity %>
-    <%= number_input f, :quantity, min: 1 %>
+    <%= number_input f, :quantity, min: 1, max: 100 %>
     <%= error_tag f, :quantity %>
   <%= end %>
 

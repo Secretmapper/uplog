@@ -14,6 +14,7 @@ Add borrow request, is_user_org_admin methods, modify delete borrowable_item, pr
 Borrow as org,
 Arian Allenson Valdez - 29/01/2020 - Add comments
 Arian Allenson Valdez - 09/02/2020 - Add borrow request dates
+Arian Allenson Valdez - 26/02/2020 - Preload user
 """
 
 defmodule Uplog.Borrowables do
@@ -311,6 +312,7 @@ defmodule Uplog.Borrowables do
     Repo.all(query)
     |> Repo.preload([:item])
     |> Repo.preload([:borrower_organization])
+    |> Repo.preload([:borrower_user])
   end
 
   def list_approved_requests(organization_id) do
@@ -321,6 +323,7 @@ defmodule Uplog.Borrowables do
     Repo.all(query)
     |> Repo.preload([:item])
     |> Repo.preload([:borrower_organization])
+    |> Repo.preload([:borrower_user])
   end
 
   @doc """

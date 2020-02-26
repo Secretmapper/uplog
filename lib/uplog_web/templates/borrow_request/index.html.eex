@@ -4,7 +4,8 @@
   <thead>
     <tr>
       <th>Item Being Borrowed</th>
-      <th>By</th>
+      <th>By Org</th>
+      <th>By User</th>
       <th>Start At</th>
       <th>End At</th>
 
@@ -16,6 +17,7 @@
     <tr>
       <td><%= borrow_request.item.name %></td>
       <td><%= borrow_request.borrower_organization.name %></td>
+      <td><%= borrow_request.borrower_user.email %></td>
       <td>
         <%= borrow_request.start_at.year %>
         <%= borrow_request.start_at.month %>
@@ -41,7 +43,8 @@
   <thead>
     <tr>
       <th>Approved Requests</th>
-      <th>By</th>
+      <th>By Org</th>
+      <th>By User</th>
       <th>Start At</th>
       <th>End At</th>
     </tr>
@@ -51,6 +54,7 @@
     <tr>
       <td><%= borrow_request.item.name %></td>
       <td><%= borrow_request.borrower_organization.name %></td>
+      <td><%= borrow_request.borrower_user.email %></td>
       <td>
         <%= borrow_request.start_at.year %>
         <%= borrow_request.start_at.month %>

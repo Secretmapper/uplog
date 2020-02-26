@@ -19,6 +19,11 @@
                 <%= @current_user.email %>
               <% end %>
             </li>
+            <li class="navigation-item">
+              <%= if @current_user do %>
+                <%= link "Log out", to: Routes.pow_session_path(@conn, :delete), method: :delete %>
+              <% end %>
+            </li>
           </ul>
         </nav>
       </section>
