@@ -17,7 +17,7 @@
     <tr>
       <td><%= borrow_request.item.name %></td>
       <td><%= borrow_request.borrower_organization.name %></td>
-      <td><%= borrow_request.borrower_user.email %></td>
+      <td><%= borrow_request.borrower_user.name %> <%= borrow_request.borrower_user.school_id %></td>
       <td>
         <%= borrow_request.start_at.year %>
         <%= borrow_request.start_at.month %>
@@ -39,6 +39,10 @@
   </tbody>
 </table>
 
+<br />
+
+<h1>Listing Current/Approved requests for <%= link @organization.name, to: Routes.organization_path(@conn, :show, @organization) %></h1>
+
 <table>
   <thead>
     <tr>
@@ -47,14 +51,60 @@
       <th>By User</th>
       <th>Start At</th>
       <th>End At</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
 <%= for borrow_request <- @approved_requests do %>
+  <%= case NaiveDateTime.compare(NaiveDateTime.utc_now, borrow_request.end_at) do %>
+    <%= :gt -> %>
+      <tr class="uplog-br--past">
+    <%= :eq -> %>
+      <tr class="uplog-br--past">
+    <%= :lt -> %>
+      <tr>
+  <%= end %>
+      <td><%= borrow_request.item.name %></td>
+      <td><%= borrow_request.borrower_organization.name %></td>
+      <td><%= borrow_request.borrower_user.name %> <%= borrow_request.borrower_user.school_id %></td>
+      <td>
+        <%= borrow_request.start_at.year %>
+        <%= borrow_request.start_at.month %>
+        <%= borrow_request.start_at.day %>
+      </td>
+      <td>
+        <%= borrow_request.end_at.year %>
+        <%= borrow_request.end_at.month %>
+        <%= borrow_request.end_at.day %>
+      </td>
+      <td>
+        <span><%= link "Return", to: Routes.organization_borrowable_item_borrow_request_return_path(@conn, :return, @organization, @borrowable_item, borrow_request), method: :post %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<br />
+
+<h1>Listing Done/Returned requests for <%= link @organization.name, to: Routes.organization_path(@conn, :show, @organization) %></h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Done Requests</th>
+      <th>By Org</th>
+      <th>By User</th>
+      <th>Start At</th>
+      <th>End At</th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for borrow_request <- @done_requests do %>
     <tr>
       <td><%= borrow_request.item.name %></td>
       <td><%= borrow_request.borrower_organization.name %></td>
-      <td><%= borrow_request.borrower_user.email %></td>
+      <td><%= borrow_request.borrower_user.name %> <%= borrow_request.borrower_user.school_id %></td>
       <td>
         <%= borrow_request.start_at.year %>
         <%= borrow_request.start_at.month %>

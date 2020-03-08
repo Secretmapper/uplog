@@ -27,6 +27,8 @@
   <thead>
     <tr>
       <th>Email</th>
+      <th>Name</th>
+      <th>School ID</th>
 
       <th></th>
     </tr>
@@ -35,6 +37,8 @@
 <%= for user <- @users do %>
     <tr>
       <td><%= user.email %></td>
+      <td><%= user.name %></td>
+      <td><%= user.school_id %></td>
 
       <td>
       </td>

@@ -9,6 +9,7 @@ of the Philippines, Diliman for the AY 2019-
 2020
 Arian Allenson Valdez - 26/01/2020 - Scaffold, add add_admin method
 Arian Allenson Valdez - 28/01/2020 - Make org details editable by org admin
+Arian Allenson Valdez - 08/03/2020 - Make orgs deletable
 """
 
 defmodule UplogWeb.OrganizationController do
@@ -85,7 +86,7 @@ defmodule UplogWeb.OrganizationController do
 
   def delete(conn, %{"id" => id}) do
     organization = Borrowables.get_organization!(id)
-    {:ok, _organization} = Borrowables.delete_organization(organization)
+    {:ok, _organization} = Borrowables.hide_organization(organization)
 
     conn
     |> put_flash(:info, "Organization deleted successfully.")

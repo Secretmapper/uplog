@@ -31,6 +31,7 @@ import_config "#{Mix.env()}.exs"
 
 config :uplog, :pow,
   user: Uplog.Users.User,
-  repo: Uplog.Repo
+  repo: Uplog.Repo,
+  web_module: UplogWeb
 
 config :canary, repo: Uplog.Repo

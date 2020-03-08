@@ -15,6 +15,7 @@ Borrow as org,
 Arian Allenson Valdez - 29/01/2020 - Add comments
 Arian Allenson Valdez - 09/02/2020 - Add borrow request dates
 Arian Allenson Valdez - 26/02/2020 - Preload user
+Arian Allenson Valdez - 08/03/2020 - Allow returning of items
 """
 
 defmodule Uplog.Borrowables do
@@ -42,7 +43,8 @@ defmodule Uplog.Borrowables do
 
   """
   def list_organizations do
-    Repo.all(Organization)
+    from(Organization, where: [visible: true])
+    |> Repo.all
   end
 
   @doc """
@@ -169,6 +171,13 @@ defmodule Uplog.Borrowables do
   """
   def delete_organization(%Organization{} = organization) do
     Repo.delete(organization)
+  end
+
+  def hide_organization(%Organization{} = organization) do
+    organization
+    |> Ecto.Changeset.change(%{})
+    |> Ecto.Changeset.put_change(:visible, false)
+    |> Repo.update
   end
 
   @doc """
@@ -319,7 +328,18 @@ defmodule Uplog.Borrowables do
     query = from br in BorrowRequest,
               left_join: i in BorrowableItem,
                 on: br.item_id == i.id,
-              where: i.organization_id == ^organization_id and not(is_nil(br.approved_at))
+              where: i.organization_id == ^organization_id and not(is_nil(br.approved_at)) and is_nil(br.received_back_at)
+    Repo.all(query)
+    |> Repo.preload([:item])
+    |> Repo.preload([:borrower_organization])
+    |> Repo.preload([:borrower_user])
+  end
+
+  def list_done_requests(organization_id) do
+    query = from br in BorrowRequest,
+              left_join: i in BorrowableItem,
+                on: br.item_id == i.id,
+              where: i.organization_id == ^organization_id and not(is_nil(br.received_back_at))
     Repo.all(query)
     |> Repo.preload([:item])
     |> Repo.preload([:borrower_organization])
@@ -397,6 +417,21 @@ defmodule Uplog.Borrowables do
     |> Ecto.Changeset.change(%{})
     |> Ecto.Changeset.put_change(:denied_at, NaiveDateTime.truncate(NaiveDateTime.utc_now, :second))
     |> Ecto.Changeset.put_assoc(:denied_by, user)
+    |> Repo.update
+  end
+
+  @doc """
+  Return borrow request
+  """
+  def return_borrow_request!(user, id) do
+    # TODO:
+    # Ensure proper permissions
+    # Ensure can approve (has not already denied/approved)
+    Repo.get!(BorrowRequest, id)
+    |> Repo.preload([:received_back_by])
+    |> Ecto.Changeset.change(%{})
+    |> Ecto.Changeset.put_change(:received_back_at, NaiveDateTime.truncate(NaiveDateTime.utc_now, :second))
+    |> Ecto.Changeset.put_assoc(:received_back_by, user)
     |> Repo.update
   end
 

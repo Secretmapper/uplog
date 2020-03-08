@@ -11,6 +11,7 @@ Arian Allenson Valdez - 26/01/2020 -
 Scaffold, Pass properties to templates, Add approve/deny methods
 Arian Allenson Valdez - 28/01/2020 -
 Fix bug with double borrowing, Add borrowing as org
+Arian Allenson Valdez - 08/03/2020 - Allow returning of items
 """
 
 defmodule UplogWeb.BorrowRequestController do
@@ -24,7 +25,8 @@ defmodule UplogWeb.BorrowRequestController do
     borrowable_item = Borrowables.get_borrowable_item!(item_id)
     borrow_requests = Borrowables.list_borrow_requests(organization_id)
     approved_requests = Borrowables.list_approved_requests(organization_id)
-    render(conn, "index.html", organization: organization, borrowable_item: borrowable_item, borrow_requests: borrow_requests, approved_requests: approved_requests)
+    done_requests = Borrowables.list_done_requests(organization_id)
+    render(conn, "index.html", organization: organization, borrowable_item: borrowable_item, borrow_requests: borrow_requests, approved_requests: approved_requests, done_requests: done_requests)
   end
 
   def create(conn, %{"organization_id" => organization_id, "borrowable_item_id" => item_id, "borrower_organization_id" => borrower_organization_id, "start" => start_date, "end" => end_date}) do
@@ -84,6 +86,20 @@ defmodule UplogWeb.BorrowRequestController do
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> put_flash(:error, "Request Denial failed")
+        |> redirect(to: Routes.organization_borrowable_item_borrow_request_path(conn, :index, organization_id, item_id))
+    end
+  end
+
+  def return(conn, %{"organization_id" => organization_id, "borrowable_item_id" => item_id, "borrow_request_id" => id}) do
+    user = Pow.Plug.current_user(conn)
+    case Borrowables.return_borrow_request!(user, id) do
+      {:ok, borrow_request} ->
+        conn
+        |> put_flash(:info, "Item Returned")
+        |> redirect(to: Routes.organization_borrowable_item_borrow_request_path(conn, :index, organization_id, item_id))
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> put_flash(:error, "Item Return failed")
         |> redirect(to: Routes.organization_borrowable_item_borrow_request_path(conn, :index, organization_id, item_id))
     end
   end

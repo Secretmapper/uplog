@@ -51,6 +51,7 @@ defmodule UplogWeb.Router do
         resources "/borrow_requests", BorrowRequestController do
           post "/approve", BorrowRequestController, :approve, as: :approve
           post "/deny", BorrowRequestController, :deny, as: :deny
+          post "/return", BorrowRequestController, :return, as: :return
         end
       end
     end
